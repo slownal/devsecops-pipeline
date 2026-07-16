@@ -1,0 +1,98 @@
+# ==========================================
+# Large Binaries & Executables (>50MB or compiled)
+# ==========================================
+*.exe
+*.msi
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+cloudflared*
+
+# ==========================================
+# Node.js / Frontend
+# ==========================================
+node_modules/
+dist/
+build/
+local-node/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ==========================================
+# Python / Virtual Environments
+# ==========================================
+venv/
+.venv/
+backend/venv/
+ml-service/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ==========================================
+# Machine Learning Models & Checkpoints
+# ==========================================
+ml-service/app/model/finetuned_model/
+ml-service/app/model/results/
+ml-service/app/model/logs/
+finetuned_model/
+results/
+logs/
+*.pt
+*.bin
+*.model
+*.pth
+*.onnx
+*.safetensors
+*.h5
+events.out.tfevents.*
+
+# ==========================================
+# Datasets & Local Databases
+# ==========================================
+dataset/
+datasets/
+*.csv
+*.tsv
+*.parquet
+*.db
+*.sqlite
+*.sqlite3
+backend/devsecops.db
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+backend/.env
+ml-service/.env
+frontend/.env*
+
+# ==========================================
+# Logs & Diagnostic Files
+# ==========================================
+*.log
+docker-info.txt
+
+# ==========================================
+# IDEs, Editors & Tooling
+# ==========================================
+.vscode/
+.idea/
+.qodo/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

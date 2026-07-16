@@ -1,0 +1,70 @@
+name: DevSecOps PR Pipeline
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  security-scan:
+    name: Code Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: goparth
+          POSTGRES_PASSWORD: goparth
+          POSTGRES_DB: devsecops
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Start ML Inference Mock Service (Local Dev)
+        run: |
+          pip install fastapi uvicorn torch transformers pydantic python-multipart
+          cd ml-service
+          # Run API Background
+          uvicorn app.main:app --host 0.0.0.0 --port 8001 &
+          sleep 5 # Wait for boot
+
+      - name: Start Orchestrator API
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          export DATABASE_URL="postgresql://goparth:goparth@localhost:5432/devsecops"
+          uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+          sleep 5
+
+      - name: Trigger Scan via local Webhook Simulator
+        run: |
+          echo "Simulating Webhook from GitHub for PR #${{ github.event.pull_request.number }}"
+          curl -X POST http://localhost:8000/webhooks/github \
+               -H "Content-Type: application/json" \
+               -H "x-github-event: pull_request" \
+               -d '{"action": "opened", "pull_request": {"number": ${{ github.event.pull_request.number }}, "title": "${{ github.event.pull_request.title }}", "head": {"ref": "${{ github.head_ref }}", "sha": "${{ github.event.pull_request.head.sha }}"}}, "repository": {"name": "${{ github.event.repository.name }}", "full_name": "${{ github.repository }}", "html_url": "https://github.com/${{ github.repository }}"}}'
+          
+          # In a real environment, you'd poll the API to wait for completion and post a pass/fail back to the CI check status.
+          sleep 10
+        
+      - name: SonarQube Scan Checkout Plugin
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: 'fake_sonar_token_example'
+          SONAR_HOST_URL: 'https://sonarcloud.io'
+        continue-on-error: true # Fake plugin usage just for schema illustration
