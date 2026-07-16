@@ -60,8 +60,10 @@ events.out.tfevents.*
 # Datasets & Local Databases
 # ==========================================
 dataset/
+!dataset/code_vulnerabilities.csv
 datasets/
 *.csv
+!dataset/code_vulnerabilities.csv
 *.tsv
 *.parquet
 *.db
