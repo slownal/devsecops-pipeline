@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { Activity, ShieldCheck, Layers, GitPullRequest } from 'lucide-react';
-import RiskBadge from '../components/RiskBadge';
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -17,9 +16,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const metApi = await axios.get('http://localhost:8000/api/dashboard/metrics');
+        const metApi = await api.get('/api/dashboard/metrics');
         setMetrics(metApi.data);
-        const prApi = await axios.get('http://localhost:8000/api/pull-requests');
+        const prApi = await api.get('/api/pull-requests');
         setPrs(prApi.data);
       } catch (err) {
         console.error("Failed to load dashboard data. Assuming local dev mode.");

@@ -1,0 +1,42 @@
+services:
+  # Backend API Service
+  - type: web
+    name: devsecops-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: GITHUB_WEBHOOK_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: devsecops-db
+          property: connectionString
+      - key: ML_SERVICE_URL
+        fromService:
+          type: web
+          name: devsecops-ml-service
+          property: host
+
+  # ML Scanner Service (Heuristic / Lightweight CodeBERT Engine)
+  - type: web
+    name: devsecops-ml-service
+    env: python
+    region: oregon
+    plan: free
+    rootDir: ml-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: USE_REAL_MODEL
+        value: "false"
+
+databases:
+  - name: devsecops-db
+    plan: free
+    region: oregon

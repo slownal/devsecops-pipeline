@@ -80,6 +80,7 @@ backend/devsecops.db
 backend/.env
 ml-service/.env
 frontend/.env*
+!frontend/.env.example
 
 # ==========================================
 # Logs & Diagnostic Files

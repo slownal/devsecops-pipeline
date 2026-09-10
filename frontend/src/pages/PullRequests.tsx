@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link } from 'react-router-dom';
 import { GitPullRequest, Activity, AlertTriangle, ShieldCheck, PlayCircle } from 'lucide-react';
 
@@ -12,8 +12,8 @@ const PullRequests = () => {
   const fetchData = async () => {
     try {
       const [prRes, repoRes] = await Promise.all([
-        axios.get('http://localhost:8000/api/pull-requests'),
-        axios.get('http://localhost:8000/api/repositories')
+        api.get('/api/pull-requests'),
+        api.get('/api/repositories')
       ]);
       setPrs(prRes.data);
       setRepos(repoRes.data);
@@ -33,7 +33,7 @@ const PullRequests = () => {
     if (!selectedRepo) return alert("Please register a repository first!");
     setIsScanning(true);
     try {
-      await axios.post('http://localhost:8000/api/generate-mock-scan', {
+      await api.post('/api/generate-mock-scan', {
         repository_id: parseInt(selectedRepo),
         title: "Mock PR Deep Scan",
         branch: "feature/auth-bypass"

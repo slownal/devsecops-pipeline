@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { ArrowLeft, CheckCircle2, ShieldAlert, Cpu, Code, ShieldCheck } from 'lucide-react';
 import RiskBadge from '../components/RiskBadge';
 
@@ -9,7 +9,7 @@ const PullRequestReport = () => {
   const [data, setData] = useState<any>(null);
 
   useEffect(() => {
-    // In real app, fetch from backend: `http://localhost:8000/api/pull-requests/${id}`
+    // In real app, fetch from backend: `/api/pull-requests/${id}`
     // Since we want this to look beautiful right away even before DB seed, let's mock the structure too just in case backend fails
     const mockData = {
       pr_info: { title: 'Add Authentication Middleware', branch: 'feat/auth', commit_sha: 'a1b2c3d' },
@@ -25,7 +25,7 @@ const PullRequestReport = () => {
       ]
     };
 
-    axios.get(`http://localhost:8000/api/pull-requests/${id}`)
+    api.get(`/api/pull-requests/${id}`)
       .then(res => setData(res.data))
       .catch((_) => setData(mockData));
   }, [id]);

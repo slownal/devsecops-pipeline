@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { ShieldAlert, AlertTriangle, AlertCircle, Info, Search } from 'lucide-react';
 
 const Vulnerabilities = () => {
@@ -8,7 +8,7 @@ const Vulnerabilities = () => {
   useEffect(() => {
     const fetchVulns = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/vulnerabilities');
+        const res = await api.get('/api/vulnerabilities');
         setVulns(res.data);
       } catch (err) {
         console.error(err);

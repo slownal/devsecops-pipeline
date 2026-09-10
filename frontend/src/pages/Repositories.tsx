@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Database, Plus, Search } from 'lucide-react';
 
 const Repositories = () => {
@@ -9,7 +9,7 @@ const Repositories = () => {
 
   const fetchRepos = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/repositories');
+      const res = await api.get('/api/repositories');
       setRepos(res.data);
     } catch (err) {
       console.error(err);
@@ -23,7 +23,7 @@ const Repositories = () => {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/repositories', newRepo);
+      await api.post('/api/repositories', newRepo);
       setIsAdding(false);
       setNewRepo({ name: '', full_name: '', url: '' });
       fetchRepos();
